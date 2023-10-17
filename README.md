@@ -8,6 +8,9 @@ cat /etc/*rel*
 
 # Смотрим в контейнере запущенном в режиме -d
 docker exec f8005df898d6 cat /etc/*rel* | grep PRETTY_NAME
+
+# Выполняем команду после создания
+docker run alpine:3.8 cat /etc/*rel*
 ```
 
 ### Команда docker run
@@ -23,6 +26,27 @@ echo "rotoro" | docker run -i rotorocloud/prompt-docker
 
 # Обучающий модуль rotorocloud
 docker run -d -p 30123:8080 --name=webapp rotorocloud/simple-webapp-rockets:v2
+
+# Удаление контейнеров
+docker rm -f $(docker container ls -aq)
+docker rm -f $(docker container ps -aq)
+docker rm -f $(docker ps -aq)
+
+# Создание контейнера без запуска
+docker create --name redis redis
+
+# Посмотреть статистику потребляемых ресурсов в виде таблицы
+docker stats
+
+# Копирование из контейнера webapp на хост
+docker container cp webapp:/etc/nginx /tmp/
+```
+
+### Особенности команды docker run
+```bash
+# Контейнер закроется через 20 секунд (CTRL+C не позволит выйти из контейнера)
+# Выйти можно только через docker stop
+docker run alpine sleep 20
 ```
 
 ### Проброс портов
