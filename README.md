@@ -42,6 +42,19 @@ docker stats
 docker container cp webapp:/etc/nginx /tmp/
 ```
 
+### Запуск Jenkins в контейнере
+```bash
+# Запуск Jenkins в контейнере (версия latest в данном случае не является последней)
+# Делаем docker inspect jenkins и получаем ip и порт внутри контейнера, после чего заходим на него через браузер
+# 172.17.0.2:8080
+docker run --name jenkins jenkins/jenkins:lts-alpine
+docker inspect jenkins | inspect jenkins
+# Либо останавливаем контейнер и делаем пробро портов
+docker run --name jenkins -p 8080:8080 jenkins/jenkins:lts-alpine
+# По умолчанию Jenkins хранит информацию в каталоге пользователя, а значит при запуске внутри контейнера - в контейнере. Нужно создать внешний том для сохранения настроек и запустить от админа, чтобы была возможность делать запись на диск
+docker run --name jenkins -p 8080:8080 -v /home/$USER/jenkins_home:/var/jenkins_home -u root jenkins/jenkins:lts-alpine 
+```
+
 ### Особенности команды docker run
 ```bash
 # Контейнер закроется через 20 секунд (CTRL+C не позволит выйти из контейнера)
