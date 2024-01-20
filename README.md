@@ -9,7 +9,7 @@ cat /etc/*rel*
 # Смотрим в контейнере запущенном в режиме -d
 docker exec f8005df898d6 cat /etc/*rel* | grep PRETTY_NAME
 
-# Выполняем команду после создания
+# Выполняем команду после создания и смотрим какая версия ОС в контейнере
 docker run alpine:3.8 cat /etc/*rel*
 ```
 
@@ -52,7 +52,8 @@ docker inspect jenkins | inspect jenkins
 # Либо останавливаем контейнер и делаем пробро портов
 docker run --name jenkins -p 8080:8080 jenkins/jenkins:lts-alpine
 # По умолчанию Jenkins хранит информацию в каталоге пользователя, а значит при запуске внутри контейнера - в контейнере. Нужно создать внешний том для сохранения настроек и запустить от админа, чтобы была возможность делать запись на диск
-docker run --name jenkins -p 8080:8080 -v /home/$USER/jenkins_home:/var/jenkins_home -u root jenkins/jenkins:lts-alpine 
+docker cp jenkins:/var/jenkins_home /home/$USER/jenkins_home
+docker run --name jenkins -p 8080:8080 -p 50000:50000 -v /home/$USER/jenkins_home:/var/jenkins_home -u root jenkins/jenkins:lts-alpine
 ```
 
 ### Особенности команды docker run
@@ -86,4 +87,25 @@ docker inspect webportal | grep IPAddress
 ### Просмотр логов
 ```bash
 docker logs 17f3d5eb5cc7
+```
+
+## Образы Docker
+
+### Создание своего образа
+```bash
+docker build . -t rotorocloud/webapp
+
+# Отправить образ на dockerhub
+docker login
+docker push rotorocloud/webapp
+
+# Посмотреть историю и место которое отъел каждый слой образа можно с помощью истории
+docker history rotorocloud/webapp
+```
+
+### Сборка образа из текущей директории с Dockerfile
+```bash
+docker build - < .Dockerfile
+# Замена entrypoint
+# docker run --entrypoint super-sleep ubuntu-sleeper 10
 ```
