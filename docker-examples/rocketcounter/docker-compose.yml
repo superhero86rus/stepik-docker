@@ -1,0 +1,8 @@
+services:
+  redis:
+    image: redis
+  rocketcounter:
+    image: rotorocloud/rocket-counter
+    ports:
+    - 8085-8087:5000
+version: '3.0'
