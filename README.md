@@ -125,3 +125,28 @@ docker run -d --name worker worker
 # Увеличиваем кол-во реплик контейнера, что в итоге поднимет 2 контейнера
 docker-compose up -d --scale rocketcounter=2
 ```
+
+### Удаленное управление docker на другой машине
+```bash
+docker -H=192.168.56.1:2375 run nginx
+```
+
+### Изоляция процессов PID Namespace
+```bash
+# Процессы в контейнере на самом деле выполняются на хосте под своим PID
+# Далее идут различные команды просмотра и задания ресурсов
+docker run --cpus=.5 --memory=100m nginx
+docker run -d --name alpine-100mb --memory 100m alpine top
+docker run -d --name stress25 --cpuset-cpus 0 --cpu-shares 256 benhall/stress
+docker run -it --net=host alpine ip addr show
+
+# Посмотреть потребляемые ресурсы контейнерами
+docker stats --no-stream
+
+# Запуск контейнера в обычном режиме изоляции и в PID-пространстве хоста
+docker run -it alpine ps aux
+docker run -it --pid=host alpine ps aux
+
+# Запуск с использование пространства имен контейнера http
+docker run --net=container:http benhall/curl curl -s localhost
+```
