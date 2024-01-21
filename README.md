@@ -198,6 +198,7 @@ docker run --network=wp-mysql-network -e DB_Host=mysql-db -e DB_Password=db_pass
 docker network ls
 # Cмотрим какая сеть в контейнере
 docker inspect webserver
-
-# 
+# Можно подключить контейнер к сети и также отключить его (feature - имя контейнера)
+docker network connect stage-ns feature
+docker network disconnect stage-ns feature
 ```
