@@ -180,3 +180,24 @@ docker run -v /data/mysql:/var/lib/mysql mysql
 # --mount - новый способ монтирования вместо -v
 docker run --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql
 ```
+
+### Сеть в Docker
+```bash
+# По умолчанию создаются 3 сети: bridge (мост), none, host
+# Bridge между контейнерами 172.17.0.x
+# None: docker run webapp --network=none
+# Host вариант убирает необходимость пробрасывать порты. Порты становятся общими из хоста. В данном случае не получится поднять несколько контейнеров одного приложения
+# docker run webapp --network=host
+
+# Изолируем контейнеры
+docker network create --driver bridge --subnet 182.18.0.0/16 my-custom-network
+docker network create --driver bridge --subnet 172.22.0.1/24 --gateway 172.22.0.1 wp-mysql-network
+docker run -d -e MYSQL_ROOT_PASSWORD=db_pass123 --name mysql-db --network wp-mysql-network mysql
+docker run --network=wp-mysql-network -e DB_Host=mysql-db -e DB_Password=db_pass123 -p 30080:8080 --name webapp -d rotorocloud/webapp-mysql
+# Смотрим сети
+docker network ls
+# Cмотрим какая сеть в контейнере
+docker inspect webserver
+
+# 
+```
