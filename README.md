@@ -149,4 +149,27 @@ docker run -it --pid=host alpine ps aux
 
 # Запуск с использование пространства имен контейнера http
 docker run --net=container:http benhall/curl curl -s localhost
+
+# Запуск в конкретном процессе
+docker run --pid=container:http alpine ps aux
+
+# Отслеживание системных вызовов
+strace
+```
+
+### Хранилище и файловая система
+```bash
+# Существуют слои контейнера и слои образа
+
+# Создаем volume. По факту создается папка /var/lib/docker/volumes/date_volume
+docker volume create data_volume
+# Если мы не выполнили команду выше, docker все равно все поймет и создаст папку где нужно
+# Монтируем (volume mounting)
+docker run -v data_volume:/var/lib/mysql mysql
+
+# Монтируем с привязкой из любого места на хосте (bind mounting)
+docker run -v /data/mysql:/var/lib/mysql mysql
+
+# --mount - новый способ монтирования вместо -v
+docker run --mount type=bind,source=/data/mysql,target=/var/lib/mysql mysql
 ```
