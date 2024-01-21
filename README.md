@@ -202,3 +202,26 @@ docker inspect webserver
 docker network connect stage-ns feature
 docker network disconnect stage-ns feature
 ```
+
+### Docker Registry
+```bash
+# В продакшене используются частные репозитории
+# image/repository - общепринятое именование образов
+# Когда image/repository одинаковые, можно указывать только имя, например nginx, что по сути nginx/nginx
+
+# Репозиторий Google: gcr.io/kubernetes-e2e-test-images/dnsutil
+# docker login gcr.io
+
+#  Собственный registry
+docker run -d -p 5000:5000 --name registry registry2
+docker image tag my-image localhost:5000/my-image
+docker push localhost:5000//my-image
+docker pull localhost:5000/my-image
+
+# Registry SSL (все клиенты должны иметь сертификат)
+# В данный момент проще выпустить сертификат
+docker run -d --restart=always --name registrySSL -v "$(pwd)"/auth:/auth -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e "REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd" -v "$(pwd)"/certs:/certs -e "REGISTRY_HTTP_ADDR=0.0.0.0:443" -e "REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt" -e "REGISTRY_HTTP_TLS_KEY=/certs/domain.key" -p 443:443 registry2
+
+### Поиск образов в репозитории
+docker search --filter=stars=15 --limit 3 nginx
+```
