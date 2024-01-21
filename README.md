@@ -224,4 +224,32 @@ docker run -d --restart=always --name registrySSL -v "$(pwd)"/auth:/auth -e "REG
 
 ### Поиск образов в репозитории
 docker search --filter=stars=15 --limit 3 nginx
+docker search --filter is-official-only=true httpd
+```
+
+### Оркестрация
+```bash
+docker service create --replicas=100 node
+
+# Системы окрестрации: Docker Swarm, Kubernetes, Mesos
+
+# Docker Swarm Cluster = Swarm Manager (Master) + Workers
+docker swarm init --advertise-addr 10.0.0.18
+docker swarm join --token <SWARM_TOKEN> 10.0.0.18:2377
+
+# Service - экземпляр приложения в кластере
+# Команда должна запускаться на менеджере, не на воркерах
+docker service create --replicas=3 node
+docker service create --replicas=3 --network frontend node
+
+# Kubernetes (k8s)
+kubectl create deployment node --image=node:v1
+kubectl scale --replicas=9 node
+kubectl set image deployment node --image=node:v2
+kubectl rollout undo deployment node
+
+# cri-o - новое слово в контейнерах (https://cri-o.io/)
+# В скором времени, docker runtime может быть заменен на cri-o
+
+# k8s = Kubelet, Scheduler,  Controller, Controller Runtime, API Server, ETCD
 ```
