@@ -40,6 +40,13 @@ docker stats
 
 # Копирование из контейнера webapp на хост
 docker container cp webapp:/etc/nginx /tmp/
+
+# Запуск контейнера mysql
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=db_pass123 mysql
+# Запуск контейнера mysql с монтированием volume
+docker run -v /opt/data:/var/lib/mysql -d --name mysql-db -e MYSQL_ROOT_PASSWORD=db_pass123 mysql
+# Посмотреть содержимое таблицы
+docker exec mysql-db mysql -pdb_pass123 -e 'use foo; select * from authors'
 ```
 
 ### Запуск Jenkins в контейнере
