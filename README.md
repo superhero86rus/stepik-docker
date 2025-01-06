@@ -253,3 +253,9 @@ kubectl rollout undo deployment node
 
 # k8s = Kubelet, Scheduler,  Controller, Controller Runtime, API Server, ETCD
 ```
+
+```bash
+# Удалить все контейнеры, волумы
+
+docker-compose down --rmi all -v --remove-orphans
+```
